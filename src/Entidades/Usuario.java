@@ -1,3 +1,5 @@
+package Entidades;
+
 public class Usuario {
     private int id;
     private String Nombre;
