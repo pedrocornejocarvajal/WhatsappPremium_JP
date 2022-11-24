@@ -20,7 +20,7 @@ class MiConexion {
         Connection connection = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(urlConnection, user, password);
+            return connection = DriverManager.getConnection(urlConnection, user, password);
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("No se pudo acceder a la base de datos");
         }
