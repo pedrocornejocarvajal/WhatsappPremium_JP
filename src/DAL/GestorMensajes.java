@@ -33,8 +33,4 @@ public class GestorMensajes {
         return exito;
     }
 
-
-
-    public static boolean 
-
 }
