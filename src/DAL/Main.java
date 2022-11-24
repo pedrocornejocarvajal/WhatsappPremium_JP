@@ -15,6 +15,6 @@ public class Main {
     public static void main(String[] args) {
         sc = new Scanner(System.in);
         MenuWhatsapp menu = new MenuWhatsapp();
-        menu.start(sc);
+        menu.start();
     }
 }
