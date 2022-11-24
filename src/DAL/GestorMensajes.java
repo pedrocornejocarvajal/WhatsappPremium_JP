@@ -18,8 +18,7 @@ public class GestorMensajes {
     public static boolean insertMensaje(Mensaje mensaje) {
         var exito = false;
         Connection cnn = null;
-        var sql = "Insert into ad2223_jgarcia.Mensajes (usuarioOrigen,usuarioDestino, Texto, Fecha, Leido) values (?,?,?,?,0)";
-
+        var sql = "Insert into ad2223_jgarcia.Mensajes (usuarioOrigen, usuarioDestino, Texto, Fecha, Leido) values (?,?,?,?,0)";
         try {
             cnn = MiConexion.abrirConexion();
             PreparedStatement sttmnt = cnn.prepareStatement(sql);
