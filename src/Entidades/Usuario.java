@@ -2,13 +2,18 @@ package Entidades;
 
 public class Usuario {
     private int id;
-    private String Nombre;
-    private String Clave;
+    private String nombre;
+    private String clave;
 
-    public Usuario(int id, String nombre, String clave) {
-        this.id = id;
-        Nombre = nombre;
-        Clave = clave;
+
+    public Usuario(int _id, String _nombre) {
+        this.id = _id;
+        this.nombre = _nombre;
+    }
+    public Usuario(int _id, String _nombre, String _clave) {
+        this.id = _id;
+        this.nombre = _nombre;
+        this.clave = _clave;
     }
 
     public int getId() {
@@ -20,18 +25,14 @@ public class Usuario {
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
 
     public String getClave() {
-        return Clave;
-    }
-
-    public void setClave(String clave) {
-        Clave = clave;
+        return clave;
     }
 }
