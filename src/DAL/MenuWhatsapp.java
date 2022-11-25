@@ -23,9 +23,9 @@ public class MenuWhatsapp {
     }
 
     /**
-     * Descripcion:
-     * Precondiciones:
-     * Postcondiciones:
+     * Descripcion: Metodo que te manda a las funciones de iniciar sesion o crear usuario segun la eleccion introducida en el metodo menu()
+     * Precondiciones: Ninguna
+     * Postcondiciones: Ninguna
      *
      * @param
      */
@@ -42,12 +42,10 @@ public class MenuWhatsapp {
     }
 
 
-
-
     /**
-     * Descripcion:
-     * Precondiciones:
-     * Postcondiciones:
+     * Descripcion: Metodo que te muestra las opciones del menu por pantalla y te pide que elijas una de ellas o pulses cualquier tecla para salir.
+     * Precondiciones: ninguna
+     * Postcondiciones: Devuelve la opcion elegida por el usuario
      *
      * @return
      */
@@ -82,9 +80,9 @@ public class MenuWhatsapp {
     }
 
     /**
-     * Descripcion:
-     * Precondiciones:
-     * Postcondiciones:
+     * Descripcion: Metodo que te muestra el menu para iniciar sesion, recoge los datos introducidos, si el usuario es correcto inicia la sesion correctamente, sino, te las opciones de crear inciar de nuevo
+     * Precondiciones: ninguna
+     * Postcondiciones: ninguna
      *
      * @return
      */
@@ -107,11 +105,10 @@ public class MenuWhatsapp {
         }
     }
 
-
     /**
-     * Descripcion:
-     * Precondiciones:
-     * Postcondiciones:
+     * Descripcion: Metodo que te muestra el menu de creacion de usuario y recoge los datos, despues le añade un usuario de Soporte de aplicacion con el mensaje de bienvenida
+     * Precondiciones: Ninguna
+     * Postcondiciones: Ninguna
      */
     private void crearUsuario() {
         String nombre, contrasenia;
@@ -275,13 +272,12 @@ public class MenuWhatsapp {
 
 
     /**
-     * Descripcion: Menu que muestra
-     * Precondiciones:
-     * Postcondiciones:
+     * Descripcion: Menu que muestra por pantalla el mensaje de error al iniciar sesion y da la opcion de crear un usuario o volver a intentarlo
+     * Precondiciones: ninguna
+     * Postcondiciones: devuelve una opcion posible del menu
      *
      * @return opcion
      */
-
     private static int menuNoIniciado() {
         String opc;
         int opcion = 0;
