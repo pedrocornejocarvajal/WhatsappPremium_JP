@@ -1,17 +1,20 @@
 package DAL;
 
 import Entidades.Contacto;
+import Entidades.Mensaje;
 import Entidades.Usuario;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.time.Instant;
+import java.util.*;
 
 public class MenuWhatsapp {
 
 
     private static final Usuario SPAM = new Usuario("SPAM");
+    private static final String MENSAJESPAM = "Bienvenido a Whastapp PCJ, el lugar donde tus datos están tan seguros como un niño ucraniano en Rusia. Compra en Eneba";
 
     private Usuario usuario;
+    private ArrayList<Usuario> contactosUsuario;
     private static Scanner sc = new Scanner(System.in);
 
     public MenuWhatsapp() {
@@ -105,8 +108,6 @@ public class MenuWhatsapp {
     }
 
 
-
-
     /**
      * Descripcion:
      * Precondiciones:
@@ -119,7 +120,9 @@ public class MenuWhatsapp {
         System.out.println("Introduce una contraseña contraseña");
         contrasenia = sc.nextLine();
         if (GestorUsuario.insertUsuario(nombre, contrasenia)) {
+
             GestorUsuario.insertContacto(new Contacto(nombre, SPAM.getNombre(), false));
+            GestorMensajes.insertMensaje(new Mensaje(SPAM.getNombre(), usuario.getNombre(), MENSAJESPAM, Date.from(Instant.now()), false));
             System.out.println("Creado con exito");
 
         } else {
@@ -171,8 +174,19 @@ public class MenuWhatsapp {
             menuHablarOAgregar();
         } else {
             //Muestra usuarios y te dice con quien hablar segun el nickname
-            for (Usuario user : lista) {
-                System.out.println(user.getNombre());
+            for (Usuario user : contactosUsuario) {
+                Timer timer = new Timer();
+                timer.scheduleAtFixedRate(
+                        new TimerTask() {
+                            @Override
+                            public void run() {
+                                ArrayList<Mensaje> mensajes = GestorMensajes.getMensajesDeConversacion(new Contacto(usuario.getNombre(), user.getNombre(), false));
+                                if(mensajes.size() > 0){
+                                    System.out.println(user.getNombre()+": " + mensajes.size() + " mensajes nuevos");
+                                }
+                            }
+                        }, 1000, 5000);
+
             }
             menuHablarOAgregar();
         }
@@ -257,16 +271,6 @@ public class MenuWhatsapp {
                 }
             }
         }
-    }
-
-    /**
-     * Descripcion:
-     * Precondiciones:
-     * Postcondiciones:
-     */
-    private void menuHablarBloquear() {
-
-
     }
 
 

@@ -1,16 +1,20 @@
 package DAL;
 
+import Entidades.Contacto;
 import Entidades.Mensaje;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class GestorMensajes {
 
 
     /**
+     *
+     *
      *
      * @param mensaje
      * @return
@@ -32,5 +36,32 @@ public class GestorMensajes {
         }
         return exito;
     }
+
+    /**
+     *
+     *
+     *
+     * @param contacto
+     * @return
+     */
+    public static ArrayList<Mensaje> getMensajesDeConversacion(Contacto contacto){
+            ArrayList<Mensaje> mensajes = new ArrayList<>();
+
+                Connection cnn = null;
+                var sql = "Select * From ad2223_jgarcia.Mensajes Where (usuarioOrigen = ? and usuarioDestion = ?) or (usuarioOrigen = ? and usuarioDestion = ?)";
+                try {
+                    PreparedStatement pSttmnt = cnn.prepareStatement(sql);
+                    pSttmnt.setString(1, contacto.getMiUsuario());
+                    pSttmnt.setString(2, contacto.getMiContacto());
+                    pSttmnt.setString(3, contacto.getMiContacto());
+                    pSttmnt.setString(4, contacto.getMiUsuario());
+                }catch(SQLException e){
+
+                    }
+
+
+            return mensajes;
+    }
+
 
 }
