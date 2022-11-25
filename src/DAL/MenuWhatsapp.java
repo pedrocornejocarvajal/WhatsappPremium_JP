@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class MenuWhatsapp {
 
+
     private static final Usuario SPAM = new Usuario("SPAM");
 
     private Usuario usuario;
@@ -148,7 +149,6 @@ public class MenuWhatsapp {
     private void muestraContactosUsuario() {
         ArrayList<Usuario> lista = Listas.getListadoContactos(usuario.getNombre());
         if (lista.size() == 1) {
-
             menuAgregarUsuario();
         } else {
             //Muestra usuarios y te dice con quien hablar segun el nickname
