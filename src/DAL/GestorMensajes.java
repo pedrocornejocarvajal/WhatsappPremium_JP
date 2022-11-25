@@ -13,8 +13,9 @@ public class GestorMensajes {
 
 
     /**
-     *
-     *
+     * Descripcion: Metodo para insertar un mensaje en la base de datos
+     * Precondiciones:
+     * Postcondiciones:
      *
      * @param mensaje
      * @return
@@ -42,8 +43,9 @@ public class GestorMensajes {
     }
 
     /**
-     *
-     *
+     * Descripcion:
+     * Precondiciones:
+     * Postcondiciones:
      *
      * @param contacto
      * @return

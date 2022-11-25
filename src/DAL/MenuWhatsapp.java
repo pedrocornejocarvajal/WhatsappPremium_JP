@@ -47,7 +47,7 @@ public class MenuWhatsapp {
      * Precondiciones: ninguna
      * Postcondiciones: Devuelve la opcion elegida por el usuario
      *
-     * @return
+     * @return opc
      */
     private int menu() {
         int opc;
@@ -67,7 +67,7 @@ public class MenuWhatsapp {
      * Postcondiciones: ninguna
      *
      * @param opcionString
-     * @return
+     * @return opcion
      */
     private static int comprobarOpcion(String opcionString) {
         int opcion = -1;
@@ -85,8 +85,6 @@ public class MenuWhatsapp {
      * Descripcion: Metodo que te muestra el menu para iniciar sesion, recoge los datos introducidos, si el usuario es correcto inicia la sesion correctamente, sino, te las opciones de crear inciar de nuevo
      * Precondiciones: ninguna
      * Postcondiciones: ninguna
-     *
-     * @return
      */
     private void iniciarSesion() {
         String nombre, contrasenia;
@@ -127,10 +125,9 @@ public class MenuWhatsapp {
     }
 
     /**
-     *
-     * Descripcion:
-     * Precondidiones:
-     * Postcondiciones:
+     * Descripcion: Metodo que muestra la conversacion con el contacto introducido por parametros
+     * Precondidiones: el contacto debe existir en la lista
+     * Postcondiciones: ninguna
      *
      * @param contacto
      */
@@ -166,10 +163,11 @@ public class MenuWhatsapp {
         }
         System.out.println("========================");
     }
+
     /**
-     * Descripcion: Método que te muestra la lista de contactos de un usuario y te la opcion de hablar con alguien eligiendo su nick o agregar un nuevo contacto, en cas de n tener contactos, te envia al menu de agregar contactoos
-     * Precondiciones:
-     * Postcondiciones:
+     * Descripcion: Método que te muestra la lista de contactos de un usuario, dandote la opcion de hablar con alguien eligiendo su nick o agregar un nuevo contacto, en caso de no tener contactos, te envia al menu de agregar contactos
+     * Precondiciones: ninguna
+     * Postcondiciones: ninguna
      */
     private void muestraContactosUsuario() {
         contactosUsuario = Listas.getListadoContactos(usuario.getNombre());
@@ -220,7 +218,7 @@ public class MenuWhatsapp {
     }
 
     /**
-     * Descripcion: Metodo que te muestra las opciones posibles con un contacto existente(Hablar o bloquear) o en su ultimo caso te manda al menu de agregar un nuevo usuario
+     * Descripcion: Metodo que te muestra las opciones posibles para un contacto existente(Hablar o bloquear) o en su ultimo caso te manda al menu de agregar un nuevo usuario
      * Precondiciones: Ninguna
      * Postcondiciones: Ninguna
      */
@@ -306,8 +304,8 @@ public class MenuWhatsapp {
 
     /**
      * Descripcion: Metodo que te muestra las ociones o pasos necesarios para agregar un nuevo contacto
-     * Precondiciones:
-     * Postcondiciones:
+     * Precondiciones: el contacto eleido existe en la lista de usuarios
+     * Postcondiciones: nignuna
      */
     private void menuAgregarUsuario() {
         boolean salir = false;

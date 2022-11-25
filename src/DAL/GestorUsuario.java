@@ -10,9 +10,13 @@ public class GestorUsuario {
 
 
     /**
+     * Descripcion: Metodo para poder insertar un usuario en la base de datos. Los datos se pasan por parametros
+     * Precondiciones: ninguna
+     * Postcondiciones: el usuario se ha creado con exito
+     *
      * @param name
      * @param pass
-     * @return
+     * @return exito
      */
     public static boolean insertUsuario(String name, String pass) {
         var cnn = MiConexion.abrirConexion();
@@ -41,15 +45,14 @@ public class GestorUsuario {
 
 
     /**
-     *
-     * Descripcion:
-     * Precondiciones:
-     * Postcondiciones:
+     * Descripcion: Metodo para bloquear a un usuario elegido de la lista de contactos
+     * Precondiciones: el usuario esta en la lista de contactos
+     * Postcondiciones: el usuario se ha bloqueado con exito
      *
      * @param nicknameBloqueador
      * @param nicknameBloqueado
      * @param nuevoEstado
-     * @return
+     * @return exito
      */
     public static boolean bloquearDesbloquearUsuario(String nicknameBloqueador, String nicknameBloqueado, boolean nuevoEstado) {
         boolean exito;
@@ -79,11 +82,7 @@ public class GestorUsuario {
         return exito;
     }
 
-
-
-
     /**
-     *
      * Descripcion: Método que inserta un registro en la tabla contactos de la base de datos.
      * Precondiciones: el contacto introducido existe en la lista de usuarios
      * Postcondiciones: ninguna
@@ -116,13 +115,8 @@ public class GestorUsuario {
         return exito;
     }
 
-
-
-
-
-
     /**
-     * Descripcion:
+     * Descripcion: Metodo que comprueba si los datos de inicio de sesion introducidos son correctos
      * Precondiciones: La base de datos debe de existir
      * Postcondiciones: La conexion con la base de datos ha sido realizada
      *

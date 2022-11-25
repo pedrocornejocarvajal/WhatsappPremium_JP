@@ -29,7 +29,10 @@ class MiConexion {
 
 
     /**
-     * Método que se encarga de cerrar la conexion a una base de datos
+     * Descripcion: Método que se encarga de cerrar la conexion a una base de datos
+     * Precondiciones: Ninguna
+     * Postcondiciones: La conexion ha sido cerrada
+     *
      * @param cnn
      * @throws SQLException
      */
