@@ -10,12 +10,11 @@ public class Listas {
 
 
 
-
-
-
     /**
-     * public ArrayList<Usuario> getListadoUsuarios()
-     * Descripcion: metodo que
+     *
+     * Descripcion: metodo que recoge el listado completo de usuarios de la tabla Usuarios de la base de datos
+     * Precondiciones: debe xistir la tabla usuarios dentro de la base de datos
+     * Postcondiciones: ninguna
      *
      * @return
      */
@@ -33,19 +32,20 @@ public class Listas {
             System.err.println("Error de Acceso a la Base de Datos o Conexion no Inicializada.");
         } finally {
             if (cnn != null) {
-                try {
+
                     MiConexion.cerrarConexion(cnn);
-                } catch (SQLException exc) {
-                    System.err.println("La conexión que intentó cerrar ya se encontraba cerrada");
-                }
+
             }
         }
         return usuarios;
     }
 
+
+
     /**
-     *
-     *
+     *  Descripcion: metodo que recoge el listado completo de contactos de un usuario concreto de la base de datos
+     *  Prercondiciones: debe existir la tabla contactos dentro de la base de datos
+     *  Postcondiciones: ninguna
      *
      * @param nickName
      * @return
@@ -56,25 +56,23 @@ public class Listas {
         PreparedStatement Psttmnt = null;
         try {
             cnn = MiConexion.abrirConexion();
+            cnn.setAutoCommit(false);
             Psttmnt = cnn.prepareStatement("Select miContacto From ad2223_jdgarcia.Contactos Where miUsuario = ?");
 
             Psttmnt.setString(1, nickName);
             ResultSet result = Psttmnt.executeQuery();
 
             while (result.next()) {
-                var salir = false;
                 var nombre = result.getString(0);
                 contactos.add(new Usuario(nombre));
             }
+            cnn.commit();
         } catch (SQLException e) {
             System.out.println("Error de Acceso a la Base de Datos o Conexion no Inicializada.");
         } finally {
             if (cnn != null) {
-                try {
                     MiConexion.cerrarConexion(cnn);
-                } catch (SQLException exc) {
-                    System.out.println("La conexión que intentó cerrar ya se encontraba cerrada");
-                }
+
             }
         }
         return contactos;

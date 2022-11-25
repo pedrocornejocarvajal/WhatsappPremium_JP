@@ -1,12 +1,10 @@
 package DAL;
 
 import Entidades.Contacto;
-import Entidades.Usuario;
-
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 
 public class GestorUsuario {
+
 
 
 
@@ -27,18 +25,18 @@ public class GestorUsuario {
             stmt.executeUpdate(sql);
 
             exito = true;
+        } catch(SQLIntegrityConstraintViolationException p) {
+            System.out.println("Ya existe un usuario con ese nick");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            try {
+            System.out.println("Los datos introducidos no coinciden con la base de datos.");
+        } finally
+         {
+
                 MiConexion.cerrarConexion(cnn);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+
         }
         return exito;
     }
-
 
 
 
@@ -73,11 +71,9 @@ public class GestorUsuario {
             exito = false;
         } finally {
             if (cnn != null) {
-                try {
+
                     MiConexion.cerrarConexion(cnn);
-                } catch (SQLException exc) {
-                    System.err.println("La conexión que intentó cerrar ya se encontraba cerrada");
-                }
+
             }
         }
         return exito;
@@ -89,25 +85,33 @@ public class GestorUsuario {
     /**
      *
      * Descripcion: Método que inserta un registro en la tabla contactos de la base de datos.
+     * Precondiciones: el contacto introducido existe en la lista de usuarios
+     * Postcondiciones: ninguna
+     *
      * @param contacto
-     * @return
-     *  exit:
-     *      -false: El registro no se pudo insertar en la base de datos.
-     *      -true: El registro se insertó en la base de datos.
+     * @return exit:
+     * -false: El registro no se pudo insertar en la base de datos.
+     * -true: El registro se insertó en la base de datos.
      */
     public static boolean insertContacto(Contacto contacto) {
         boolean exito;
         Connection cnn = null;
         try {
             cnn = MiConexion.abrirConexion();
-            PreparedStatement sttmnt = cnn.prepareStatement("Insert into ad2223_jgarcia.Contactos values(miUsuario = ?, miContacto = ?, Bloqueado = 0)");
+            cnn.setAutoCommit(false);
+            PreparedStatement sttmnt = cnn.prepareStatement("Insert into ad2223_jgarcia.Contactos values(?, ?," + "0)");
             sttmnt.setString(1, contacto.getMiUsuario());
             sttmnt.setString(2, contacto.getMiContacto());
             sttmnt.executeUpdate();
             exito = true;
-
+            cnn.commit();
         } catch (SQLException e) {
             exito = false;
+        } finally {
+            if (cnn != null) {
+                    MiConexion.cerrarConexion(cnn);
+
+            }
         }
         return exito;
     }
@@ -125,11 +129,11 @@ public class GestorUsuario {
      * @return
      */
     public static boolean comprobarIniciarSesion(String nombre, String contrasenia) {
-
+        Connection cnn = null;
         var exito = false;
         String sql = "Select * From ad2223_jgarcia.Usuarios Where NickName = ? and Contrasenia = ?";
         try {
-            Connection cnn = MiConexion.abrirConexion();
+            cnn = MiConexion.abrirConexion();
             PreparedStatement pSttmnt = cnn.prepareStatement(sql);
             pSttmnt.setString(1, nombre);
             pSttmnt.setString(2, contrasenia);
@@ -138,7 +142,12 @@ public class GestorUsuario {
                 exito = true;
             }
         } catch (SQLException e) {
-            System.err.println("");
+            System.err.println("La conexión que intenta cerrar ya se encontraba cerrada o no existe aún.");
+        }finally{
+            if(cnn != null){
+                    MiConexion.cerrarConexion(cnn);
+
+            }
         }
         if (!exito) {
             System.err.println("El usuario o contraseña no son correctos");
@@ -149,51 +158,30 @@ public class GestorUsuario {
 
 
 
-
-
-
-
-
-
-
     /**
-     * Descripcion: Metodo para registrar un usuario en la base de datos
-     * Precondiciones: La base de datos debe de existir
-     * Postcondiciones: La conexion con la base de datos ha sido realizada
+     * Descripcion:
+     * Precondiciones: el usuario esta en la lista de contactos
+     * Postcondiciones: el usuario se ha bloqueado con exito
      *
-     * @return
+     * @param contacto
+     * @return exito
      */
-    public static void registrarUsuario(Usuario usu) {
-        Connection connection = null;
-        try {
-            connection = MiConexion.abrirConexion();
-            //se deshabilita el modo de confirmación automática de la BD
-            connection.setAutoCommit(false);
-            String sql = "INSERT INTO ad2223_jgarcia.usuarios VALUES ( ? ,? )";
-            PreparedStatement pSttmnt = connection.prepareStatement(sql);
-            pSttmnt.setString(1, usu.getNombre());
-            pSttmnt.setString(2, usu.getClave());
-            pSttmnt.executeUpdate(sql);
-            //se indica que se deben aplicar los cambios en la base de datos
-            connection.commit();
-        } catch (SQLException ex) {
-            System.err.println("ERROR: " + ex.getMessage());
-            if (connection != null) {
-                System.out.println("Rollback");
-                try {
-                    //deshace todos los cambios realizados en los datos
-                    connection.rollback();
-                } catch (SQLException ex1) {
-                    System.err.println("No se pudo deshacer" + ex1.getMessage());
-                }
-            }
-        } finally {
-            System.out.println("cierra conexion a la base de datos");
-            try {
-                if (connection != null) connection.close();
-            } catch (SQLException ex) {
-                System.err.println(ex.getMessage());
-            }
+    public static boolean comprobarContactoDeUsuario(Contacto contacto){
+        var exito = false;
+        Connection cnn = null;
+        var sql = "Select miContacto From ad2223_jgarcia.Contactos Where miUsuario = ? and miContacto = ?";
+
+        try{
+            cnn = MiConexion.abrirConexion();
+            PreparedStatement psttmnt = cnn.prepareStatement(sql);
+            psttmnt.setString(1, contacto.getMiUsuario());
+            psttmnt.setString(2, contacto.getMiContacto());
+            ResultSet result = psttmnt.executeQuery();
+            result.next();
+            exito = true;
+        }catch(SQLException e){
+            System.err.println("Este usuario no se encuentra entre su lista de contactos");
         }
+        return exito;
     }
 }

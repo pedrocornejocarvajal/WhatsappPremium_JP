@@ -33,9 +33,14 @@ class MiConexion {
      * @param cnn
      * @throws SQLException
      */
-    public static void cerrarConexion(Connection cnn) throws SQLException{
-        if(cnn != null){
-            cnn.close();
+    public static void cerrarConexion(Connection cnn){
+        try{
+            if(cnn != null){
+                cnn.close();
+            }
+        }catch(SQLException er){
+            System.out.println("La conexión no existe o ya estaba cerrada");
         }
+
     }
 }
