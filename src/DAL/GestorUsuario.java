@@ -25,6 +25,7 @@ public class GestorUsuario {
             String sql = "Insert into ad2223_jgarcia.Usuarios (Nickname, Contrasenia) values ( '" + name + "' ,'" + pass + "');";
             Statement stmt = cnn.createStatement();
             stmt.executeUpdate(sql);
+
             exito = true;
         } catch (SQLException e) {
             throw new RuntimeException(e);

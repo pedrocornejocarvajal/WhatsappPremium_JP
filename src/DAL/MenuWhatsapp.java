@@ -50,25 +50,15 @@ public class MenuWhatsapp {
      */
     private int menu() {
         int opc;
-
         System.out.println("""
                 Bienvenido a Whatsapp PCJ
                 [1]. Iniciar sesion
                 [2]. Crear usuario
                 Pulse cualquier tecla para salir.
-                Elige una opcion:
-                """);
-
+                Elige una opcion:""");
         opc = comprobarOpcion(sc.nextLine());
-
-
         return opc;
     }
-
-    private void menuHablarOAgregar() {
-
-    }
-
 
     /**
      * Descripcion:
@@ -138,34 +128,114 @@ public class MenuWhatsapp {
     }
 
 
-
-
     /**
+     *
      * Descripcion:
-     * Precondiciones:
+     * Precondidiones:
      * Postcondiciones:
      *
+     * @param contacto
+     */
+    private void mostrarCoversacion(Contacto contacto){
+        ArrayList<Mensaje> mensajes = GestorMensajes.getMensajesDeConversacion(contacto);
+        String usuarioOrigen, mnsj, hora;
+        for (Mensaje mensaje : mensajes ) {
+            //Comprobamos quien es el emisor
+            if(mensaje.getUsuarioOrigen().equals(usuario.getNombre())){
+                //Si es el usuario lo situaremos en la parte derecha de la pantalla
+                usuarioOrigen = String.format("|%10s|", mensaje.getUsuarioOrigen());
+                mnsj = String.format("|%10s|", mensaje.getFecha().toString());
+                hora = String.format("|%10s|", mensaje.getMensaje());
+            }else{
+                //Si el emisor es el contacto del usuario se posicionará en la parte izquierda de la pantalla
+                usuarioOrigen = String.format("|%-10s|", mensaje.getUsuarioOrigen());
+                mnsj = String.format("|%-10s|", mensaje.getFecha().toInstant());
+                hora = String.format("|%-10s|", mensaje.getMensaje());
+            }
+            System.out.println("========================");
+            System.out.println(hora);
+            System.out.println(usuarioOrigen);
+            System.out.println(mensaje);
+            System.out.println("========================");
+
+        }
+    }
+    /**
+     * Descripcion: Método que te muestra la lista de contactos de un usuario y te la opcion de hablar con alguien eligiendo su nick o agregar un nuevo contacto, en cas de n tener contactos, te envia al menu de agregar contactoos
+     * Precondiciones:
+     * Postcondiciones:
      */
     private void muestraContactosUsuario() {
-        ArrayList<Usuario> lista = Listas.getListadoContactos(usuario.getNombre());
-        if (lista.size() == 1) {
-            menuAgregarUsuario();
+        contactosUsuario = Listas.getListadoContactos(usuario.getNombre());
+        if (contactosUsuario.size() == 1) {
+            menuHablarOAgregar();
         } else {
             //Muestra usuarios y te dice con quien hablar segun el nickname
             for (Usuario user : lista) {
                 System.out.println(user.getNombre());
             }
-            //Menu para hablar o agregar nuevo usuario
-
-
+            menuHablarOAgregar();
         }
     }
 
     /**
-     * Descripcion:
+     * Descripcion: Metodo que te muestra las opciones posibles con un contacto existente(Hablar o bloquear) o en su ultimo caso te manda al menu de agregar un nuevo usuario
+     * Precondiciones: Ninguna
+     * Postcondiciones: Ninguna
+     */
+    private void menuHablarOAgregar() {
+        int opc;
+        String nombre;
+        Contacto contacto;
+        do {
+            System.out.println("Introduce un nombre de contacto");
+            nombre = sc.nextLine();
+            contacto = new Contacto(usuario.getNombre(), nombre, true);
+        } while (contactosUsuario.contains(contacto.getMiContacto()));
+        System.out.println("¿Que deseas hacer con el contacto " + nombre + "?");
+        switch (menuContacto()) {
+            case 1 -> getMensajes(contacto);
+            case 2 ->{
+                    if (!contacto.isBloqueado()){
+                        GestorUsuario.bloquearDesbloquearUsuario(usuario.getNombre(), nombre, true);
+                    } else {
+                        GestorUsuario.bloquearDesbloquearUsuario(usuario.getNombre(), nombre, false);
+                    }
+            }
+            case 3 -> menuAgregarUsuario();
+            default -> muestraContactosUsuario();
+        }
+
+    }
+
+
+    private ArrayList<Mensaje> getMensajes(Contacto contacto) {
+        ArrayList<Mensaje> mensajes = new ArrayList<>();
+
+    }
+
+    /**
+     * Descripcion: Menu que te muestra las opciones posibles al entrar en contactos de un usuario concreto
+     * Precondiciones: ninguna
+     * Postcondiciones: devuelve una opcion correcta del menu
+     *
+     * @return opc
+     */
+    private int menuContacto() {
+        int opc;
+        System.out.println("""
+                [1]. Hablar
+                [2]. Bloquear
+                [3]. Agregar nuevo contacto
+                Elige una opcion""");
+        opc = comprobarOpcion(sc.nextLine());
+        return opc;
+    }
+
+    /**
+     * Descripcion: Metodo que te muestra las ociones o pasos necesarios para agregar un nuevo contacto
      * Precondiciones:
      * Postcondiciones:
-     *
      */
     private void menuAgregarUsuario() {
         boolean salir = false;
@@ -177,7 +247,10 @@ public class MenuWhatsapp {
                 salir = true;
             } else {
                 System.out.println("No se encontró " + nick + " en WhatsUp");
-                System.out.println("1. volver a intentarlo, 2. Salir");
+                System.out.println("""
+                        [1] Volver a intentarlo
+                        [2] Salir
+                        Elige una opcion""");
                 switch (sc.nextLine()) {
                     case "1" -> salir = false;
                     case "2" -> salir = true;
@@ -214,8 +287,7 @@ public class MenuWhatsapp {
                 [1]. Si
                 [2]. Intentar volver a iniciar sesion
                 Pulse cualquier tecla para salir.
-                Elige una opcion:
-                """);
+                Elige una opcion:""");
         opcion = comprobarOpcion(sc.nextLine());
         return opcion;
     }
