@@ -297,7 +297,7 @@ public class MenuWhatsapp {
         var salir = false;
         while (!salir) {
             System.out.println("""
-                    [1]. Si
+                    [1]. Hablar a un contacto
                     [2]. Agregar nuevo contacto
                     [0]. Salir
                     Elige una Opcion""");
