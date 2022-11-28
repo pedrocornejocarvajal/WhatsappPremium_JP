@@ -1,5 +1,6 @@
 package Entidades;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class Mensaje {
@@ -7,14 +8,14 @@ public class Mensaje {
     private String usuarioOrigen;
     private String usuarioDestino;
     private String mensaje;
-    private Date fecha;
+    private Timestamp fecha;
     private boolean leido;
 
 
     public Mensaje() {
     }
 
-    public Mensaje( String usuarioOrigen, String usuarioDestino, String mensaje, Date fecha, boolean leido) {
+    public Mensaje( String usuarioOrigen, String usuarioDestino, String mensaje, Timestamp fecha, boolean leido) {
         this.usuarioOrigen = usuarioOrigen;
         this.usuarioDestino = usuarioDestino;
         this.mensaje = mensaje;
@@ -60,7 +61,8 @@ public class Mensaje {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+
+    public void setFecha(Timestamp fecha) {
         this.fecha = fecha;
     }
 

@@ -172,6 +172,7 @@ public class GestorUsuario {
             psttmnt.setString(2, contacto.getMiContacto());
             ResultSet result = psttmnt.executeQuery();
             result.next();
+            result.getString(1);
             exito = true;
         }catch(SQLException e){
             System.err.println("Este usuario no se encuentra entre su lista de contactos");

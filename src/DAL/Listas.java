@@ -22,9 +22,9 @@ public class Listas {
      * @param nickName
      * @return
      */
-    public static ArrayList<Usuario> getListadoContactos(String nickName) {
+    public static ArrayList<Contacto> getListadoContactos(String nickName) {
         Connection cnn = null;
-        ArrayList<Usuario> contactos = new ArrayList<>();
+        ArrayList<Contacto> contactos = new ArrayList<>();
         PreparedStatement Psttmnt = null;
         try {
             cnn = MiConexion.abrirConexion();
@@ -36,7 +36,7 @@ public class Listas {
 
             while (result.next()) {
                 var nombre = result.getString(1);
-                contactos.add(new Usuario(nombre));
+                contactos.add(new Contacto(nickName, nombre, false));
             }
             cnn.commit();
         } catch (SQLException e) {

@@ -7,6 +7,9 @@ import Entidades.Contacto;
 import Entidades.Mensaje;
 import Entidades.Usuario;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
@@ -17,14 +20,13 @@ public class MenuWhatsapp {
     private static final String MENSAJESPAM = "Bienvenido a Whastapp PCJ, el lugar donde tus datos están tan seguros como un niño ucraniano en Rusia. Compra en Eneba";
 
     private Usuario usuario;
-    private ArrayList<Usuario> contactosUsuario;
+    private ArrayList<Contacto> contactosUsuario;
     private static Scanner sc = new Scanner(System.in);
 
     public MenuWhatsapp() {
 
         usuario = new Usuario();
     }
-
 
 
     /**
@@ -47,8 +49,6 @@ public class MenuWhatsapp {
     }
 
 
-
-
     /**
      * Descripcion: Metodo que te muestra las opciones del menu por pantalla y te pide que elijas una de ellas o pulses cualquier tecla para salir.
      * Precondiciones: ninguna
@@ -67,8 +67,6 @@ public class MenuWhatsapp {
         opc = comprobarOpcion(sc.nextLine());
         return opc;
     }
-
-
 
 
     /**
@@ -92,8 +90,6 @@ public class MenuWhatsapp {
     }
 
 
-
-
     /**
      * Descripcion: Metodo que te muestra el menu para iniciar sesion, recoge los datos introducidos, si el usuario es correcto inicia la sesion correctamente, sino, te las opciones de crear inciar de nuevo
      * Precondiciones: ninguna
@@ -106,14 +102,18 @@ public class MenuWhatsapp {
         nombre = sc.nextLine();
         System.out.println("Introduce tu constraseña");
         contrasenia = sc.nextLine();
-        if (GestorUsuario.comprobarIniciarSesion(nombre, contrasenia)) {
-            usuario = new Usuario(nombre);
-            muestraContactosUsuario();
-        } else {
-            switch (menuNoIniciado()) {
-                case 1 -> crearUsuario();
-                case 2 -> iniciarSesion();
-                default -> System.out.println("¡Vuelve pronto!");
+        var salir = false;
+        while (!salir) {
+            if (GestorUsuario.comprobarIniciarSesion(nombre, contrasenia)) {
+                usuario = new Usuario(nombre);
+                muestraContactosUsuario();
+            } else {
+                switch (menuNoIniciado()) {
+                    case 1 -> crearUsuario();
+                    case 2 -> iniciarSesion();
+                    case 0 -> salir = true;
+                    default -> System.out.println("¡Vuelve pronto!");
+                }
             }
         }
     }
@@ -132,11 +132,50 @@ public class MenuWhatsapp {
         contrasenia = sc.nextLine();
         if (GestorUsuario.insertUsuario(nombre, contrasenia)) {
             GestorUsuario.insertContacto(new Contacto(nombre, SPAM.getNombre(), false));
-            GestorMensajes.insertMensaje(new Mensaje(SPAM.getNombre(), nombre, MENSAJESPAM, Date.from(Instant.now()), false));
+            GestorUsuario.insertContacto(new Contacto(SPAM.getNombre(), nombre, false));
+            GestorMensajes.insertMensaje(new Mensaje(SPAM.getNombre(), nombre, MENSAJESPAM, Timestamp.from(Instant.now()), false));
             System.out.println("Creado con exito");
 
         }
     }
+
+
+    private void mostrarMensajeConversacion(Mensaje mensaje)
+    {
+        //Compruebo si el mensaje esta leido o no
+        if (!mensaje.isLeido()) {
+            mensaje.setLeido(true);
+            GestorMensajes.updateMensajeLeido(mensaje);
+        }
+        //Strings para recoger los datos del mensaje
+        String usuarioOrigen, mnsj, hora;
+        //Formato de la fecha
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        String horaS = simpleDateFormat.format(mensaje.getFecha());
+        //Comprobamos quien es el emisor
+        if (mensaje.getUsuarioOrigen().equals(usuario.getNombre())) {
+            //Si es el usuario lo situaremos en la parte derecha de la pantalla
+            usuarioOrigen = String.format("|%30s|", mensaje.getUsuarioOrigen());
+            mnsj = String.format("|%30s|", mensaje.getMensaje());
+            hora = String.format("|%30s|", horaS);
+        } else {
+            //Si el emisor es el contacto del usuario se posicionará en la parte izquierda de la pantalla
+            usuarioOrigen = String.format("|%-30s|", mensaje.getUsuarioOrigen());
+            mnsj = String.format("|%-30s|", mensaje.getMensaje());
+            hora = String.format("|%-30s|", horaS);
+        }
+
+        System.out.println(hora);
+        System.out.println(usuarioOrigen);
+        System.out.println("----------------------------------------------");
+
+
+        System.out.println(mnsj);
+        System.out.println("================================================");
+
+
+    }
+
 
     /**
      * Descripcion: Metodo que muestra la conversacion con el contacto introducido por parametros
@@ -147,36 +186,29 @@ public class MenuWhatsapp {
      */
     private void mostrarCoversacion(Contacto contacto) {
         ArrayList<Mensaje> mensajes = GestorMensajes.getMensajesDeConversacion(contacto);
-        String usuarioOrigen, mnsj, hora;
-        System.out.println("========================");
-        System.out.println("Conversación con " + contacto.getMiContacto());
-        for (Mensaje mensaje : mensajes) {
-            //Establezco los mensajes no leidos como leidos
-            if (!mensaje.isLeido()) {
-                mensaje.setLeido(true);
-                GestorMensajes.updateMensajeLeido(mensaje);
-            }
-            //Comprobamos quien es el emisor
-            if (mensaje.getUsuarioOrigen().equals(usuario.getNombre())) {
-                //Si es el usuario lo situaremos en la parte derecha de la pantalla
-                usuarioOrigen = String.format("|%10s|", mensaje.getUsuarioOrigen());
-                mnsj = String.format("|%10s|", mensaje.getFecha().toString());
-                hora = String.format("|%10s|", mensaje.getMensaje());
-            } else {
-                //Si el emisor es el contacto del usuario se posicionará en la parte izquierda de la pantalla
-                usuarioOrigen = String.format("|%-10s|", mensaje.getUsuarioOrigen());
-                mnsj = String.format("|%-10s|", mensaje.getFecha().toInstant());
-                hora = String.format("|%-10s|", mensaje.getMensaje());
-            }
-            System.out.println("========================");
-            System.out.println(hora);
-            System.out.println(usuarioOrigen);
-            System.out.println(mnsj);
-            System.out.println("========================");
+        Timer timer = new Timer();
 
+        System.out.println("================================================");
+        System.out.println("Conversación con " + contacto.getMiContacto());
+        System.out.println("================================================");
+        for (Mensaje mensaje : mensajes) {
+            mostrarMensajeConversacion(mensaje);
         }
-        System.out.println("========================");
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override public void run()
+            {
+                ArrayList<Mensaje> mensajesBackUp = GestorMensajes.getMensajesDeConversacion(contacto);
+                if(mensajesBackUp.size() > mensajes.size()){
+                    for(int i = mensajes.size()-1; i < mensajesBackUp.size(); i++){
+                            mostrarMensajeConversacion(mensajesBackUp.get(i));
+                    }
+                }
+            }
+        }, 1000, 5000);
+        
+        System.out.println("================================================");
     }
+
 
     /**
      * Descripcion: Método que te muestra la lista de contactos de un usuario, dandote la opcion de hablar con alguien eligiendo su nick o agregar un nuevo contacto, en caso de no tener contactos, te envia al menu de agregar contactos
@@ -188,18 +220,17 @@ public class MenuWhatsapp {
         System.out.println("========================");
         System.out.println("Tu lista de Contactos");
         System.out.println("========================");
-            //Muestra usuarios y te dice con quien hablar segun el nickname
-            for (Usuario user : contactosUsuario) {
+        //Muestra usuarios y te dice con quien hablar segun el nickname
+        for (Contacto user : contactosUsuario) {
 
-//Contacto c = new Contacto(usuario.getNombre(), user.getNombre());
-                String bloq;
-                String bloqS = "";
-                if(c.isBloqueado()){
-                    bloqS = "Bloqueado";
-                }
-                bloq = String.format("%10s", bloqS);
-                System.out.println("-"+user.getNombre() + bloq);
+            String bloq;
+            String bloqS = "";
+            if (user.isBloqueado()) {
+                bloqS = "Bloqueado";
             }
+            bloq = String.format("%10s", bloqS);
+            System.out.println("-" + user.getMiContacto() + bloq);
+        }
         System.out.println("========================");
             var salir = false;
             while(!salir){
@@ -247,7 +278,6 @@ public class MenuWhatsapp {
                     GestorUsuario.bloquearDesbloquearUsuario(usuario.getNombre(), contacto.getMiContacto(), false);
                 }
             }
-            case 3 -> menuAgregarUsuario();
             default -> muestraContactosUsuario();
         }
 
@@ -263,6 +293,7 @@ public class MenuWhatsapp {
     private void menuChat(Contacto contacto) {
         var salir = false;
         while (!salir) {
+
             mostrarCoversacion(contacto);
             System.out.println("Escribe tu mensaje para " + contacto.getMiContacto() + " a continuación");
             var mensaje = sc.nextLine();
@@ -278,10 +309,12 @@ public class MenuWhatsapp {
                 opc = comprobarOpcion(sc.nextLine());
                 switch (opc) {
                     case 1 -> {
-                        GestorMensajes.insertMensaje(new Mensaje(contacto.getMiUsuario(), contacto.getMiContacto(), mensaje, Date.from(Instant.now()), false));
+                        GestorMensajes.insertMensaje(new Mensaje(contacto.getMiUsuario(), contacto.getMiContacto(), mensaje, Timestamp.from(Instant.now()), false));
+
                     }
+                    case 0 -> salir = true;
                 }
-            } while (opc < 1 || opc > 2);
+            } while (opc < 0 || opc > 2);
 
 
         }
@@ -326,6 +359,7 @@ public class MenuWhatsapp {
             System.out.println("Introduce el nombre del usuario");
             var nick = sc.nextLine();
             if (GestorUsuario.insertContacto(new Contacto(usuario.getNombre(), nick, false))) {
+                GestorUsuario.insertContacto(new Contacto(nick, usuario.getNombre(), false));
                 System.out.println("Has agregado a " + nick + " a tu lista de contactos");
                 salir = true;
             } else {

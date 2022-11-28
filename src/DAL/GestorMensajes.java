@@ -68,7 +68,7 @@ public class GestorMensajes {
             ResultSet rs = pSttmnt.executeQuery();
             while (rs.next()) {
                 mensaje = new Mensaje(
-                        rs.getString("usuarioOrigen"), rs.getString("usuarioDestino"), rs.getString("Texto"), rs.getDate("Fecha"), rs.getBoolean("Leido")
+                        rs.getString("usuarioOrigen"), rs.getString("usuarioDestino"), rs.getString("Texto"), rs.getTimestamp("Fecha"), rs.getBoolean("Leido")
                 );
                 mensajes.add(mensaje);
             }
