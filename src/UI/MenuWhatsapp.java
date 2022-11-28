@@ -31,40 +31,32 @@ public class MenuWhatsapp {
     }
 
 
+    private void comprobarMensajes() {
+        for (Contacto contacto : contactosUsuario
+        ) {
+            //Genero la lista de mensajes
+            ArrayList<Mensaje> mensajesBackUp = GestorMensajes.getMensajesDeConversacion(contacto);
 
-
-    private TimerTask comprobarMensajesTimerTask = new TimerTask() {
-        @Override
-        public void run() {
-
-            for (Contacto contacto : contactosUsuario
-            ) {
-                //Genero la lista de mensajes
-                ArrayList<Mensaje> mensajesBackUp = GestorMensajes.getMensajesDeConversacion(contacto);
-
-                var finContacto = false;
-                //Recorro la lista de mensajes
-                for (Mensaje mensaje : mensajesBackUp) {
-                    //Si el mensaje no ha sido leido
-                    if (!mensaje.isLeido()) {
-                        //Sumo uno al conteo de mensajes
-                        mensajes++;
-                        //Si no se ha lanzado el booleano de finContacto
-                        if (!finContacto) {
-                            //Añado uno al conteo de contactos
-                            contactos++;
-                            //Pongo finContacto a true
-                            finContacto = true;
-                        }
+            var finContacto = false;
+            //Recorro la lista de mensajes
+            for (Mensaje mensaje : mensajesBackUp) {
+                //Si el mensaje no ha sido leido
+                if (!mensaje.isLeido()) {
+                    //Sumo uno al conteo de mensajes
+                    mensajes++;
+                    //Si no se ha lanzado el booleano de finContacto
+                    if (!finContacto) {
+                        //Añado uno al conteo de contactos
+                        contactos++;
+                        //Pongo finContacto a true
+                        finContacto = true;
                     }
                 }
             }
-
-
         }
-    };
 
 
+    }
 
 
     /**
@@ -87,7 +79,6 @@ public class MenuWhatsapp {
     }
 
 
-
     /**
      * Descripcion: Metodo que te muestra las opciones del menu por pantalla y te pide que elijas una de ellas o pulses cualquier tecla para salir.
      * Precondiciones: ninguna
@@ -106,9 +97,6 @@ public class MenuWhatsapp {
         opc = comprobarOpcion(sc.nextLine());
         return opc;
     }
-
-
-
 
 
     /**
@@ -131,8 +119,6 @@ public class MenuWhatsapp {
     }
 
 
-
-
     /**
      * Descripcion: Metodo que te muestra el menu para iniciar sesion, recoge los datos introducidos, si el usuario es correcto inicia la sesion correctamente, sino, te las opciones de crear inciar de nuevo
      * Precondiciones: ninguna
@@ -150,7 +136,7 @@ public class MenuWhatsapp {
             if (GestorUsuario.comprobarIniciarSesion(nombre, contrasenia)) {
                 usuario = new Usuario(nombre);
                 muestraContactosUsuario();
-                timer.scheduleAtFixedRate(comprobarMensajesTimerTask, 1000, 5000);
+
             } else {
                 switch (menuNoIniciado()) {
                     case 1 -> crearUsuario();
@@ -161,9 +147,6 @@ public class MenuWhatsapp {
             }
         }
     }
-
-
-
 
 
     /**
@@ -188,9 +171,6 @@ public class MenuWhatsapp {
 
 
     /**
-     *
-     *
-     *
      * @param mensaje
      */
     private void mostrarMensajeConversacion(Mensaje mensaje) {
@@ -229,9 +209,6 @@ public class MenuWhatsapp {
     }
 
 
-
-
-
     /**
      * Descripcion: Metodo que muestra la conversacion con el contacto introducido por parametros
      * Precondidiones: el contacto debe existir en la lista
@@ -254,17 +231,17 @@ public class MenuWhatsapp {
             @Override
             public void run() {
 
-                    ArrayList<Mensaje> mensajesBackUp = GestorMensajes.getMensajesDeConversacion(contacto);
+                ArrayList<Mensaje> mensajesBackUp = GestorMensajes.getMensajesDeConversacion(contacto);
 
-                    for (Mensaje mnsj : mensajesBackUp) {
+                for (Mensaje mnsj : mensajesBackUp) {
 
-                        if (!mnsj.isLeido() && mnsj.getUsuarioDestino().equals(usuario.getNombre())) {
+                    if (!mnsj.isLeido() && mnsj.getUsuarioDestino().equals(usuario.getNombre())) {
 
-                            mostrarMensajeConversacion(mnsj);
+                        mostrarMensajeConversacion(mnsj);
 
-                        }
                     }
                 }
+            }
         }, 1000, 5000);
         System.out.println("================================================");
     }
@@ -291,9 +268,13 @@ public class MenuWhatsapp {
             bloq = String.format("%10s", bloqS);
             System.out.println("-" + user.getMiContacto() + bloq);
         }
-        System.out.println("========================");
-        System.out.printf("Tienes %d mensajes de %d conversaciones.%n", mensajes, contactos);
-        System.out.println("========================");
+
+        comprobarMensajes();
+        if(mensajes > 0){
+            System.out.println("========================");
+            System.out.printf("Tienes %d mensajes de %d conversaciones.%n", mensajes, contactos);
+            System.out.println("========================");
+        }
         var salir = false;
         while (!salir) {
             System.out.println("""
