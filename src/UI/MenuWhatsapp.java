@@ -1,5 +1,8 @@
-package DAL;
+package UI;
 
+import DAL.GestorMensajes;
+import DAL.GestorUsuario;
+import DAL.Listas;
 import Entidades.Contacto;
 import Entidades.Mensaje;
 import Entidades.Usuario;

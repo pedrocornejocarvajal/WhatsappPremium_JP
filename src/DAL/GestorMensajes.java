@@ -6,7 +6,6 @@ import Entidades.Mensaje;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class GestorMensajes {
@@ -43,9 +42,9 @@ public class GestorMensajes {
     }
 
     /**
-     * Descripcion:
-     * Precondiciones:
-     * Postcondiciones:
+     * Descripcion: Metodo que muestra la lista de mensajes detallados con un contacto concreto
+     * Precondiciones: El contacto debe existir en la BBDD
+     * Postcondiciones: Devuelven los mensajes o un mensaje de error
      *
      * @param contacto
      * @return
@@ -72,9 +71,9 @@ public class GestorMensajes {
 
 
     /**
-     * Descripcion:
-     * Precondiciones:
-     * Postcondiciones:
+     * Descripcion: Metodo que actualiza un mensaje al estado "leido"
+     * Precondiciones: La base ded atos debe existir
+     * Postcondiciones: El estado del mensaje debe quedar en estado "Leido"
      *
      * @param mensaje
      * @return
