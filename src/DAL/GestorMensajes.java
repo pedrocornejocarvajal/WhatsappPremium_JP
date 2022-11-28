@@ -90,7 +90,7 @@ public class GestorMensajes {
     public static boolean updateMensajeLeido(Mensaje mensaje){
         Connection cnn = null;
         var exito = false;
-        String sql = "Update ad2223_jgarcia.Mensajes set Leido = 1 Where usuarioOrigen = ? and usuarioDestion = ?";
+        String sql = "Update ad2223_jgarcia.Mensajes set Leido = 1 Where usuarioOrigen = ? and usuarioDestino = ?";
         try{
             cnn = MiConexion.abrirConexion();
             PreparedStatement ps = cnn.prepareStatement(sql);

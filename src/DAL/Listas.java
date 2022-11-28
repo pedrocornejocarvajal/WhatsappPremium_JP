@@ -10,35 +10,7 @@ public class Listas {
 
 
 
-    /**
-     *
-     * Descripcion: metodo que recoge el listado completo de usuarios de la tabla Usuarios de la base de datos
-     * Precondiciones: debe xistir la tabla usuarios dentro de la base de datos
-     * Postcondiciones: ninguna
-     *
-     * @return
-     */
-    public ArrayList<Usuario> getListadoUsuarios() {
-        Connection cnn = MiConexion.abrirConexion();
-        ArrayList<Usuario> usuarios = new ArrayList<>();
 
-        try {
-            Statement Psttmnt = cnn.createStatement();
-            ResultSet result = Psttmnt.executeQuery("Select * From ad2223_jdgarcia.Usuarios");
-            while (result.next()) {
-                usuarios.add(new Usuario(result.getString(0), result.getString(1)));
-            }
-        } catch (SQLException e) {
-            System.err.println("Error de Acceso a la Base de Datos o Conexion no Inicializada.");
-        } finally {
-            if (cnn != null) {
-
-                    MiConexion.cerrarConexion(cnn);
-
-            }
-        }
-        return usuarios;
-    }
 
 
 
@@ -63,7 +35,7 @@ public class Listas {
             ResultSet result = Psttmnt.executeQuery();
 
             while (result.next()) {
-                var nombre = result.getString(0);
+                var nombre = result.getString(1);
                 contactos.add(new Usuario(nombre));
             }
             cnn.commit();

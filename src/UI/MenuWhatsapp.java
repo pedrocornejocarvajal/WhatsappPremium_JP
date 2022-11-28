@@ -25,6 +25,8 @@ public class MenuWhatsapp {
         usuario = new Usuario();
     }
 
+
+
     /**
      * Descripcion: Metodo que te manda a las funciones de iniciar sesion o crear usuario segun la eleccion introducida en el metodo menu()
      * Precondiciones: Ninguna
@@ -43,6 +45,8 @@ public class MenuWhatsapp {
         }
         System.out.println("¡Vuelve pronto!");
     }
+
+
 
 
     /**
@@ -64,6 +68,9 @@ public class MenuWhatsapp {
         return opc;
     }
 
+
+
+
     /**
      * Descripcion: Metodo que cmprueba que la opcion introducido por teclado es realmente un numero.
      * Precondiciones: ninguna
@@ -83,6 +90,9 @@ public class MenuWhatsapp {
 
         return opcion;
     }
+
+
+
 
     /**
      * Descripcion: Metodo que te muestra el menu para iniciar sesion, recoge los datos introducidos, si el usuario es correcto inicia la sesion correctamente, sino, te las opciones de crear inciar de nuevo
@@ -107,6 +117,7 @@ public class MenuWhatsapp {
             }
         }
     }
+
 
     /**
      * Descripcion: Metodo que te muestra el menu de creacion de usuario y recoge los datos, despues le añade un usuario de Soporte de aplicacion con el mensaje de bienvenida
@@ -174,23 +185,22 @@ public class MenuWhatsapp {
      */
     private void muestraContactosUsuario() {
         contactosUsuario = Listas.getListadoContactos(usuario.getNombre());
-
+        System.out.println("========================");
+        System.out.println("Tu lista de Contactos");
+        System.out.println("========================");
             //Muestra usuarios y te dice con quien hablar segun el nickname
             for (Usuario user : contactosUsuario) {
-                Timer timer = new Timer();
-                timer.scheduleAtFixedRate(
-                        new TimerTask() {
-                            @Override
-                            public void run() {
-                                ArrayList<Mensaje> mensajes = GestorMensajes.getMensajesDeConversacion(new Contacto(usuario.getNombre(), user.getNombre(), false));
-                                if (mensajes.size() > 0) {
-                                    System.out.println(user.getNombre() + ": " + mensajes.size() + " mensajes nuevos");
-                                }
-                            }
-                        }, 1000, 5000);
 
+//Contacto c = new Contacto(usuario.getNombre(), user.getNombre());
+                String bloq;
+                String bloqS = "";
+                if(c.isBloqueado()){
+                    bloqS = "Bloqueado";
+                }
+                bloq = String.format("%10s", bloqS);
+                System.out.println("-"+user.getNombre() + bloq);
             }
-
+        System.out.println("========================");
             var salir = false;
             while(!salir){
                 System.out.println("¿Deseas escribir a un usuario?");
