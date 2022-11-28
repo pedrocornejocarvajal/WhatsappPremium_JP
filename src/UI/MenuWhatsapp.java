@@ -18,7 +18,9 @@ public class MenuWhatsapp {
 
     private static final Usuario SPAM = new Usuario("SPAM");
     private static final String MENSAJESPAM = "Bienvenido a Whastapp PCJ, el lugar donde tus datos están tan seguros como un niño ucraniano en Rusia. Compra en Eneba";
-
+    private int mensajes = 0;
+    private int contactos = 0;
+    private static final Timer timer = new Timer();
     private Usuario usuario;
     private ArrayList<Contacto> contactosUsuario;
     private static Scanner sc = new Scanner(System.in);
@@ -27,6 +29,42 @@ public class MenuWhatsapp {
 
         usuario = new Usuario();
     }
+
+
+
+
+    private TimerTask comprobarMensajesTimerTask = new TimerTask() {
+        @Override
+        public void run() {
+
+            for (Contacto contacto : contactosUsuario
+            ) {
+                //Genero la lista de mensajes
+                ArrayList<Mensaje> mensajesBackUp = GestorMensajes.getMensajesDeConversacion(contacto);
+
+                var finContacto = false;
+                //Recorro la lista de mensajes
+                for (Mensaje mensaje : mensajesBackUp) {
+                    //Si el mensaje no ha sido leido
+                    if (!mensaje.isLeido()) {
+                        //Sumo uno al conteo de mensajes
+                        mensajes++;
+                        //Si no se ha lanzado el booleano de finContacto
+                        if (!finContacto) {
+                            //Añado uno al conteo de contactos
+                            contactos++;
+                            //Pongo finContacto a true
+                            finContacto = true;
+                        }
+                    }
+                }
+            }
+
+
+        }
+    };
+
+
 
 
     /**
@@ -49,6 +87,7 @@ public class MenuWhatsapp {
     }
 
 
+
     /**
      * Descripcion: Metodo que te muestra las opciones del menu por pantalla y te pide que elijas una de ellas o pulses cualquier tecla para salir.
      * Precondiciones: ninguna
@@ -67,6 +106,9 @@ public class MenuWhatsapp {
         opc = comprobarOpcion(sc.nextLine());
         return opc;
     }
+
+
+
 
 
     /**
@@ -89,6 +131,8 @@ public class MenuWhatsapp {
     }
 
 
+
+
     /**
      * Descripcion: Metodo que te muestra el menu para iniciar sesion, recoge los datos introducidos, si el usuario es correcto inicia la sesion correctamente, sino, te las opciones de crear inciar de nuevo
      * Precondiciones: ninguna
@@ -106,6 +150,7 @@ public class MenuWhatsapp {
             if (GestorUsuario.comprobarIniciarSesion(nombre, contrasenia)) {
                 usuario = new Usuario(nombre);
                 muestraContactosUsuario();
+                timer.scheduleAtFixedRate(comprobarMensajesTimerTask, 1000, 5000);
             } else {
                 switch (menuNoIniciado()) {
                     case 1 -> crearUsuario();
@@ -116,6 +161,9 @@ public class MenuWhatsapp {
             }
         }
     }
+
+
+
 
 
     /**
@@ -139,6 +187,12 @@ public class MenuWhatsapp {
     }
 
 
+    /**
+     *
+     *
+     *
+     * @param mensaje
+     */
     private void mostrarMensajeConversacion(Mensaje mensaje) {
         //Compruebo si el mensaje esta leido o no
         if (!mensaje.isLeido()) {
@@ -175,6 +229,9 @@ public class MenuWhatsapp {
     }
 
 
+
+
+
     /**
      * Descripcion: Metodo que muestra la conversacion con el contacto introducido por parametros
      * Precondidiones: el contacto debe existir en la lista
@@ -184,7 +241,7 @@ public class MenuWhatsapp {
      */
     private void mostrarCoversacion(Contacto contacto) {
         ArrayList<Mensaje> mensajes = GestorMensajes.getMensajesDeConversacion(contacto);
-        Timer timer = new Timer();
+
 
         System.out.println("================================================");
         System.out.println("Conversación con " + contacto.getMiContacto());
@@ -192,20 +249,23 @@ public class MenuWhatsapp {
         for (Mensaje mensaje : mensajes) {
             mostrarMensajeConversacion(mensaje);
         }
+
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                ArrayList<Mensaje> mensajesBackUp = GestorMensajes.getMensajesDeConversacion(contacto);
-                if (mensajesBackUp.size() > mensajes.size()) {
-                    for (int i = mensajes.size() - 1; i < mensajesBackUp.size(); i++) {
-                        mostrarMensajeConversacion(mensajesBackUp.get(i));
-                        mensajes.add(mensajesBackUp.get(i));
+
+                    ArrayList<Mensaje> mensajesBackUp = GestorMensajes.getMensajesDeConversacion(contacto);
+
+                    for (Mensaje mnsj : mensajesBackUp) {
+
+                        if (!mnsj.isLeido() && mnsj.getUsuarioDestino().equals(usuario.getNombre())) {
+
+                            mostrarMensajeConversacion(mnsj);
+
+                        }
                     }
-
                 }
-            }
         }, 1000, 5000);
-
         System.out.println("================================================");
     }
 
@@ -232,14 +292,15 @@ public class MenuWhatsapp {
             System.out.println("-" + user.getMiContacto() + bloq);
         }
         System.out.println("========================");
+        System.out.printf("Tienes %d mensajes de %d conversaciones.%n", mensajes, contactos);
+        System.out.println("========================");
         var salir = false;
         while (!salir) {
-            System.out.println("¿Deseas escribir a un usuario?");
             System.out.println("""
                     [1]. Si
                     [2]. Agregar nuevo contacto
                     [0]. Salir
-                    Elige una opcion""");
+                    Elige una Opcion""");
             switch (comprobarOpcion(sc.nextLine())) {
                 case 1 -> {
                     System.out.println("Escribe el nombre del usuario al que deseas seleccionar de tu lista");
@@ -290,9 +351,8 @@ public class MenuWhatsapp {
      */
     private void menuChat(Contacto contacto) {
         var salir = false;
+        mostrarCoversacion(contacto);
         while (!salir) {
-
-            mostrarCoversacion(contacto);
             System.out.println("Escribe tu mensaje para " + contacto.getMiContacto() + " a continuación");
             var mensaje = sc.nextLine();
             var opc = 0;
@@ -313,13 +373,9 @@ public class MenuWhatsapp {
                 }
             } while (opc < 0 || opc > 2);
 
-
+            mostrarCoversacion(contacto);
         }
 
-
-        //Escribir mensaje
-        //Enviar mensaje
-        //Introducir mensaje en BBDD
 
     }
 
