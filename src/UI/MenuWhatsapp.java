@@ -139,8 +139,7 @@ public class MenuWhatsapp {
     }
 
 
-    private void mostrarMensajeConversacion(Mensaje mensaje)
-    {
+    private void mostrarMensajeConversacion(Mensaje mensaje) {
         //Compruebo si el mensaje esta leido o no
         if (!mensaje.isLeido()) {
             mensaje.setLeido(true);
@@ -194,13 +193,15 @@ public class MenuWhatsapp {
             mostrarMensajeConversacion(mensaje);
         }
         timer.scheduleAtFixedRate(new TimerTask() {
-            @Override public void run()
-            {
+            @Override
+            public void run() {
                 ArrayList<Mensaje> mensajesBackUp = GestorMensajes.getMensajesDeConversacion(contacto);
-                if(mensajesBackUp.size() > mensajes.size()){
-                    for(int i = mensajes.size()-1; i < mensajesBackUp.size(); i++){
-                            mostrarMensajeConversacion(mensajesBackUp.get(i));
+                if (mensajesBackUp.size() > mensajes.size()) {
+                    for (int i = mensajes.size() - 1; i < mensajesBackUp.size(); i++) {
+                        mostrarMensajeConversacion(mensajesBackUp.get(i));
+                        mensajes.add(mensajesBackUp.get(i));
                     }
+
                 }
             }
         }, 1000, 5000);
