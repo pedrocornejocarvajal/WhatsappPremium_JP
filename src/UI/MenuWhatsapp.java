@@ -106,7 +106,7 @@ public class MenuWhatsapp {
 
 
     /**
-     * Descripcion: Metodo que cmprueba que la opcion introducido por teclado es realmente un numero.
+     * Descripcion: Metodo que comprueba que la opcion introducido por teclado es realmente un numero.
      * Precondiciones: ninguna
      * Postcondiciones: ninguna
      *
@@ -290,6 +290,7 @@ public class MenuWhatsapp {
                     System.out.println("========================");
                     System.out.printf("Tienes %d mensajes de %d conversaciones.%n", mensajes, contactos);
 
+                    mensajes++;
 
                 }
 
