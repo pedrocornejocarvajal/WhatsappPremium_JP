@@ -62,7 +62,7 @@ public class MenuWhatsapp {
                 Bienvenido a Whatsapp PCJ
                 [1]. Iniciar sesion
                 [2]. Crear usuario
-                Pulse cualquier tecla para salir.
+                [0]. Salir
                 Elige una opcion:""");
         opc = comprobarOpcion(sc.nextLine());
         return opc;
@@ -79,7 +79,6 @@ public class MenuWhatsapp {
      */
     private static int comprobarOpcion(String opcionString) {
         int opcion = -1;
-
         try {
             opcion = Integer.parseInt(opcionString);
         } catch (NumberFormatException r) {
@@ -232,33 +231,31 @@ public class MenuWhatsapp {
             System.out.println("-" + user.getMiContacto() + bloq);
         }
         System.out.println("========================");
-            var salir = false;
-            while(!salir){
-                System.out.println("¿Deseas escribir a un usuario?");
-                System.out.println("""
-                [1]. Hablar
-      
-                [2]. Agregar nuevo contacto
-                
-                Elige una opcion""");
-                switch(comprobarOpcion(sc.nextLine())){
-                    case 1 -> {
-                        System.out.println("Escribe el nombre del usuario al que deseas seleccionar de tu lista");
-                        var nombreContacto = sc.nextLine();
-                       Contacto ct =  new Contacto(usuario.getNombre(), nombreContacto, false);
-                        if(GestorUsuario.comprobarContactoDeUsuario(ct)){
-                            menuHablarOAgregar(ct);
-                        }else{
-                            menuAgregarUsuario();
-                        }
-
-                    }
-                    case 2 -> {
+        var salir = false;
+        while (!salir) {
+            System.out.println("¿Deseas escribir a un usuario?");
+            System.out.println("""
+                    [1]. Si
+                    [2]. Agregar nuevo contacto
+                    [0]. Salir
+                    Elige una opcion""");
+            switch (comprobarOpcion(sc.nextLine())) {
+                case 1 -> {
+                    System.out.println("Escribe el nombre del usuario al que deseas seleccionar de tu lista");
+                    var nombreContacto = sc.nextLine();
+                    Contacto ct = new Contacto(usuario.getNombre(), nombreContacto, false);
+                    if (GestorUsuario.comprobarContactoDeUsuario(ct)) {
+                        menuHablarOAgregar(ct);
+                    } else {
                         menuAgregarUsuario();
                     }
-                    case 0 -> salir = true;
                 }
+                case 2 -> {
+                    menuAgregarUsuario();
+                }
+                case 0 -> salir = true;
             }
+        }
     }
 
     /**
@@ -299,13 +296,12 @@ public class MenuWhatsapp {
             var mensaje = sc.nextLine();
             var opc = 0;
             do {
-
-
                 System.out.println("""
-                        ¿Desea enviar el mensaje?
-                                        
+                        ¿Desea enviar el mensaje?        
                         [1]. Enviar
-                        [2]. Volver""");
+                        [2]. Reescribir
+                        [0]. Salir
+                        Elige una opcion""");
                 opc = comprobarOpcion(sc.nextLine());
                 switch (opc) {
                     case 1 -> {
@@ -339,9 +335,7 @@ public class MenuWhatsapp {
         System.out.println("""
                 [1]. Hablar
                 [2]. Bloquear
-                
-                [3]. Agregar nuevo contacto
-                
+                [0]. Salir
                 Elige una opcion""");
         opc = comprobarOpcion(sc.nextLine());
         return opc;
@@ -363,15 +357,13 @@ public class MenuWhatsapp {
                 System.out.println("Has agregado a " + nick + " a tu lista de contactos");
                 salir = true;
             } else {
-                System.out.println("No se encontró " + nick + " en WhatsUp");
+                System.out.println("No se encontró " + nick + " en WhatsApp PCJ");
                 System.out.println("""
-                        [1] Volver a intentarlo
-                        [2] Salir
+                        [1]. Volver a intentarlo
+                        [0]. Salir
                         Elige una opcion""");
-                switch (comprobarOpcion(sc.nextLine())) {
-                    case 1 -> salir = false;
-                    case 2 -> salir = true;
-                }
+                salir = comprobarOpcion(sc.nextLine()) != 1;
+
             }
         }
     }
@@ -388,11 +380,11 @@ public class MenuWhatsapp {
         String opc;
         int opcion = 0;
         System.out.println("""
-                No has podido iniciar sesion :(
+                No has podido iniciar sesion en WhatsApp PCJ
                 ¿Deseas crear un usuario?
                 [1]. Si
                 [2]. Intentar volver a iniciar sesion
-                Pulse cualquier tecla para salir.
+                [0]. Salir
                 Elige una opcion:""");
         opcion = comprobarOpcion(sc.nextLine());
         return opcion;

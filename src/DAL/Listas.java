@@ -29,7 +29,7 @@ public class Listas {
         try {
             cnn = MiConexion.abrirConexion();
             cnn.setAutoCommit(false);
-            Psttmnt = cnn.prepareStatement("Select miContacto From ad2223_jdgarcia.Contactos Where miUsuario = ?");
+            Psttmnt = cnn.prepareStatement("Select miContacto From ad2223_jgarcia.Contactos Where miUsuario = ?");
 
             Psttmnt.setString(1, nickName);
             ResultSet result = Psttmnt.executeQuery();
