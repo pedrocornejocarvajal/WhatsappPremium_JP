@@ -22,6 +22,9 @@ public class MenuWhatsapp {
     private int contactos = 0;
     private static final Timer timer = new Timer();
     private Usuario usuario;
+
+    private ArrayList<Mensaje> mensajesSinLeer = new ArrayList<>();
+    ;
     private ArrayList<Contacto> contactosUsuario;
     private static Scanner sc = new Scanner(System.in);
 
@@ -31,31 +34,59 @@ public class MenuWhatsapp {
     }
 
 
-    private void comprobarMensajes() {
+    private int comprobarMensajes() {
+        var aumento = false;
+
+
         for (Contacto contacto : contactosUsuario
         ) {
+            var contactoSeleccionado = false;
             //Genero la lista de mensajes
             ArrayList<Mensaje> mensajesBackUp = GestorMensajes.getMensajesDeConversacion(contacto);
 
-            var finContacto = false;
-            //Recorro la lista de mensajes
-            for (Mensaje mensaje : mensajesBackUp) {
-                //Si el mensaje no ha sido leido
-                if (!mensaje.isLeido()) {
-                    //Sumo uno al conteo de mensajes
-                    mensajes++;
-                    //Si no se ha lanzado el booleano de finContacto
-                    if (!finContacto) {
-                        //Añado uno al conteo de contactos
-                        contactos++;
-                        //Pongo finContacto a true
-                        finContacto = true;
+            //Si la lista backup es más larga que la lista de mensajes sin leer
+            if (mensajesBackUp.size() > mensajesSinLeer.size()) {
+                //Recorro la lista de mensajes
+                for (Mensaje mensaje : mensajesBackUp) {
+                    //Si el mensaje no ha sido leido
+                    if (!mensaje.isLeido()) {
+                        if (!contactoSeleccionado) {
+                            contactos++;
+                            contactoSeleccionado = true;
+                        }
+                        //Si la lista de mensajes sin leer es mayor que 0
+                        if (mensajesSinLeer.size() > 0) {
+                            //Recorro los mensajes sin leer si los hay
+                            for (Mensaje mens : mensajesSinLeer
+                            ) {
+                                //Si el id del mensaje de la lista backup es distinto del que tenemos de la lista de mensajes no leidos
+                                if (mensaje.getIdMensaje() != mens.getIdMensaje()) {
+                                    //Añado el mensaje a la lista mensajesSinLeer
+                                    mensajesSinLeer.add(mensaje);
+
+                                }
+                            }
+                            //Si la longitud de la lista de mensajes es menos o igual a 0
+                        } else {
+
+                            mensajesSinLeer.add(mensajesBackUp.get(0));
+
+                        }
+                        //Establezco que el conteo de mensajes será igual a la longitud de la lista de mensajes sin leer
+                        mensajes = mensajesSinLeer.size();
+                        contactos = 1;
                     }
                 }
+                //Si las dos listas son iguales en cuanto a longitud
+            } else if (mensajesSinLeer.size() == mensajesBackUp.size()) {
+                //Establezco los mensajes y los contactos a 0
+                mensajes = 0;
+                contactos = 0;
             }
+
         }
 
-
+        return mensajes;
     }
 
 
@@ -136,6 +167,7 @@ public class MenuWhatsapp {
             if (GestorUsuario.comprobarIniciarSesion(nombre, contrasenia)) {
                 usuario = new Usuario(nombre);
                 muestraContactosUsuario();
+                menuSesionIniciada();
 
             } else {
                 switch (menuNoIniciado()) {
@@ -269,12 +301,32 @@ public class MenuWhatsapp {
             System.out.println("-" + user.getMiContacto() + bloq);
         }
 
-        comprobarMensajes();
-        if(mensajes > 0){
-            System.out.println("========================");
-            System.out.printf("Tienes %d mensajes de %d conversaciones.%n", mensajes, contactos);
-            System.out.println("========================");
-        }
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+
+                if (comprobarMensajes() > 0) {
+
+
+                    System.out.println("========================");
+                    System.out.printf("Tienes %d mensajes de %d conversaciones.%n", mensajes, contactos);
+
+
+                }
+
+
+            }
+        }, 100, 5000);
+        System.out.println("========================");
+    }
+
+    /**
+     * Descripcion: Metodo que muestra el menu con las opciones despue de haber iniciado sesion correctamente
+     * Precondidiones: ninguna
+     * Postcondiciones: ninguna
+     */
+
+    private void menuSesionIniciada() {
         var salir = false;
         while (!salir) {
             System.out.println("""
