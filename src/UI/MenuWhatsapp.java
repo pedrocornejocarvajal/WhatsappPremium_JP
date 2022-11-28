@@ -44,55 +44,22 @@ public class MenuWhatsapp {
      */
 
     private int comprobarMensajes() {
-        var aumento = false;
 
 
-        for (Contacto contacto : contactosUsuario
-        ) {
-            var contactoSeleccionado = false;
-            //Genero la lista de mensajes
-            ArrayList<Mensaje> mensajesBackUp = GestorMensajes.getMensajesDeConversacion(contacto);
+        mensajesSinLeer = GestorMensajes.getMensajesNoLeidosDeUsuario(usuario);
+        if (mensajes < mensajesSinLeer.size()) {
 
-            //Si la lista backup es más larga que la lista de mensajes sin leer
-            if (mensajesBackUp.size() > mensajesSinLeer.size()) {
-                //Recorro la lista de mensajes
-                for (Mensaje mensaje : mensajesBackUp) {
-                    //Si el mensaje no ha sido leido
-                    if (!mensaje.isLeido()) {
-                        if (!contactoSeleccionado) {
-                            contactos++;
-                            contactoSeleccionado = true;
-                        }
-                        //Si la lista de mensajes sin leer es mayor que 0
-                        if (mensajesSinLeer.size() > 0) {
-                            //Recorro los mensajes sin leer si los hay
-                            for (Mensaje mens : mensajesSinLeer
-                            ) {
-                                //Si el id del mensaje de la lista backup es distinto del que tenemos de la lista de mensajes no leidos
-                                if (mensaje.getIdMensaje() != mens.getIdMensaje()) {
-                                    //Añado el mensaje a la lista mensajesSinLeer
-                                    mensajesSinLeer.add(mensaje);
 
-                                }
-                            }
-                            //Si la longitud de la lista de mensajes es menos o igual a 0
-                        } else {
-
-                            mensajesSinLeer.add(mensajesBackUp.get(0));
-
-                        }
-                        //Establezco que el conteo de mensajes será igual a la longitud de la lista de mensajes sin leer
-                        mensajes = mensajesSinLeer.size();
-                        contactos = 1;
+            for (int i = 0; i < mensajesSinLeer.size(); i++) {
+                mensajes++;
+                if (i > 0) {
+                    if (!(mensajesSinLeer.get(i).getUsuarioOrigen().equals(mensajesSinLeer.get(i - 1).getUsuarioOrigen()))) {
+                        contactos++;
                     }
+                } else {
+                    contactos++;
                 }
-                //Si las dos listas son iguales en cuanto a longitud
-            } else if (mensajesSinLeer.size() == mensajesBackUp.size()) {
-                //Establezco los mensajes y los contactos a 0
-                mensajes = 0;
-                contactos = 0;
             }
-
         }
 
         return mensajes;
@@ -220,7 +187,7 @@ public class MenuWhatsapp {
      */
     private void mostrarMensajeConversacion(Mensaje mensaje) {
         //Compruebo si el mensaje esta leido o no
-        if (!mensaje.isLeido()) {
+        if (!mensaje.isLeido() && mensaje.getUsuarioDestino().equals(usuario.getNombre())) {
             mensaje.setLeido(true);
             GestorMensajes.updateMensajeLeido(mensaje);
         }
@@ -317,8 +284,8 @@ public class MenuWhatsapp {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-
-                if (comprobarMensajes() > 0) {
+                comprobarMensajes();
+                if (mensajes == mensajesSinLeer.size()) {
 
 
                     System.out.println("========================");
@@ -361,7 +328,9 @@ public class MenuWhatsapp {
                 case 2 -> {
                     menuAgregarUsuario();
                 }
-                case 0 -> salir = true;
+                case 0 -> {
+                    salir = true;
+                }
             }
         }
     }

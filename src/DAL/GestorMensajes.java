@@ -2,6 +2,7 @@ package DAL;
 
 import Entidades.Contacto;
 import Entidades.Mensaje;
+import Entidades.Usuario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,9 +35,9 @@ public class GestorMensajes {
             exito = true;
         } catch (SQLException e) {
             System.err.println("Alguno de los datos introducidos no correspondia con los existentes en la Base de Datos");
-        }finally{
-            if(cnn != null){
-               MiConexion.cerrarConexion(cnn);
+        } finally {
+            if (cnn != null) {
+                MiConexion.cerrarConexion(cnn);
             }
         }
         return exito;
@@ -79,6 +80,32 @@ public class GestorMensajes {
         return mensajes;
     }
 
+
+    public static ArrayList<Mensaje> getMensajesNoLeidosDeUsuario(Usuario usuario) {
+        ArrayList<Mensaje> mensajes = new ArrayList<>();
+        Mensaje mensaje;
+        Connection cnn = null;
+        var sql = "Select * From ad2223_jgarcia.Mensajes Where ( usuarioDestino = ?) and (Leido = 0)";
+        try {
+            cnn = MiConexion.abrirConexion();
+            PreparedStatement pSttmnt = cnn.prepareStatement(sql);
+            pSttmnt.setString(1, usuario.getNombre());
+
+            ResultSet rs = pSttmnt.executeQuery();
+            while (rs.next()) {
+                mensaje = new Mensaje(
+                        rs.getString("usuarioOrigen"), rs.getString("usuarioDestino"), rs.getString("Texto"), rs.getTimestamp("Fecha"), rs.getBoolean("Leido")
+                );
+                mensajes.add(mensaje);
+            }
+        } catch (SQLException e) {
+            System.err.println("No tiene ningún mensaje");
+        }
+
+        return mensajes;
+    }
+
+
     /**
      * Descripcion: Metodo que actualiza un mensaje al estado "leido"
      * Precondiciones: La base ded atos debe existir
@@ -87,24 +114,24 @@ public class GestorMensajes {
      * @param mensaje
      * @return
      */
-    public static boolean updateMensajeLeido(Mensaje mensaje){
+    public static boolean updateMensajeLeido(Mensaje mensaje) {
         Connection cnn = null;
         var exito = false;
         String sql = "Update ad2223_jgarcia.Mensajes set Leido = 1 Where usuarioOrigen = ? and usuarioDestino = ?";
-        try{
+        try {
             cnn = MiConexion.abrirConexion();
             PreparedStatement ps = cnn.prepareStatement(sql);
             ps.setString(1, mensaje.getUsuarioOrigen());
             ps.setString(2, mensaje.getUsuarioDestino());
             ps.executeUpdate();
             exito = true;
-        }catch(SQLException e){
+        } catch (SQLException e) {
             System.err.println("Alguno de los datos introducidos no coinciden con la base de datos");
 
         }
-        if(cnn != null){
+        if (cnn != null) {
 
-                MiConexion.cerrarConexion(cnn);
+            MiConexion.cerrarConexion(cnn);
 
         }
         return exito;
