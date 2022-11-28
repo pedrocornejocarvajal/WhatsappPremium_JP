@@ -213,7 +213,7 @@ public class MenuWhatsapp {
 
                     }
                     case 2 -> {
-                        muestraContactosUsuario();
+                        menuAgregarUsuario();
                     }
                     case 0 -> salir = true;
                 }

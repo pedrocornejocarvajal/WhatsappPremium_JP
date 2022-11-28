@@ -5,6 +5,7 @@ import Entidades.Mensaje;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -42,33 +43,41 @@ public class GestorMensajes {
     }
 
     /**
-     * Descripcion: Metodo que muestra la lista de mensajes detallados con un contacto concreto
+     * Descripcion: Metodo que recoge la lista de mensajes detallados con un contacto concreto
      * Precondiciones: El contacto debe existir en la BBDD
      * Postcondiciones: Devuelven los mensajes o un mensaje de error
      *
      * @param contacto
      * @return
      */
-    public static ArrayList<Mensaje> getMensajesDeConversacion(Contacto contacto){
-            ArrayList<Mensaje> mensajes = new ArrayList<>();
-
-                Connection cnn = null;
-                var sql = "Select * From ad2223_jgarcia.Mensajes Where (usuarioOrigen = ? and usuarioDestion = ?) or (usuarioOrigen = ? and usuarioDestion = ?)";
-                try {
-                    cnn = MiConexion.abrirConexion();
-                    PreparedStatement pSttmnt = cnn.prepareStatement(sql);
-                    pSttmnt.setString(1, contacto.getMiUsuario());
-                    pSttmnt.setString(2, contacto.getMiContacto());
-                    pSttmnt.setString(3, contacto.getMiContacto());
-                    pSttmnt.setString(4, contacto.getMiUsuario());
-                }catch(SQLException e){
-                    System.err.println("No tiene ningún mensaje");
-                    }
+    public static ArrayList<Mensaje> getMensajesDeConversacion(Contacto contacto) {
+        ArrayList<Mensaje> mensajes = new ArrayList<>();
+        Mensaje mensaje;
+        Connection cnn = null;
 
 
-            return mensajes;
+        var sql = "Select * From ad2223_jgarcia.Mensajes Where (usuarioOrigen = ? and usuarioDestino = ?) or (usuarioOrigen = ? and usuarioDestino = ?)";
+        try {
+            cnn = MiConexion.abrirConexion();
+            PreparedStatement pSttmnt = cnn.prepareStatement(sql);
+            pSttmnt.setString(1, contacto.getMiUsuario());
+            pSttmnt.setString(2, contacto.getMiContacto());
+            pSttmnt.setString(3, contacto.getMiContacto());
+            pSttmnt.setString(4, contacto.getMiUsuario());
+
+            ResultSet rs = pSttmnt.executeQuery();
+            while (rs.next()) {
+                mensaje = new Mensaje(
+                        rs.getString("usuarioOrigen"), rs.getString("usuarioDestino"), rs.getString("Texto"), rs.getDate("Fecha"), rs.getBoolean("Leido")
+                );
+                mensajes.add(mensaje);
+            }
+        } catch (SQLException e) {
+            System.err.println("No tiene ningún mensaje");
+        }
+
+        return mensajes;
     }
-
 
     /**
      * Descripcion: Metodo que actualiza un mensaje al estado "leido"

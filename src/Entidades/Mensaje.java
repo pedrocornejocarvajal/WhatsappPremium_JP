@@ -14,7 +14,7 @@ public class Mensaje {
     public Mensaje() {
     }
 
-    public Mensaje(String usuarioOrigen, String usuarioDestino, String mensaje, Date fecha, boolean leido) {
+    public Mensaje( String usuarioOrigen, String usuarioDestino, String mensaje, Date fecha, boolean leido) {
         this.usuarioOrigen = usuarioOrigen;
         this.usuarioDestino = usuarioDestino;
         this.mensaje = mensaje;
