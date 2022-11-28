@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
+
 public class MenuWhatsapp {
 
 
@@ -33,6 +34,14 @@ public class MenuWhatsapp {
         usuario = new Usuario();
     }
 
+
+    /**
+     * Descripcion:
+     * Precondidiones:
+     * Postcondiciones:
+     *
+     * @return
+     */
 
     private int comprobarMensajes() {
         var aumento = false;
@@ -203,6 +212,10 @@ public class MenuWhatsapp {
 
 
     /**
+     * Descripcion: Metodo que muestra y da formato a un mensaje con detalles
+     * Precondidiones: ninguna
+     * Postcondiciones: ninguna
+     *
      * @param mensaje
      */
     private void mostrarMensajeConversacion(Mensaje mensaje) {
