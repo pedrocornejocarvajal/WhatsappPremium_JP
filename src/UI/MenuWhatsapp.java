@@ -25,7 +25,6 @@ public class MenuWhatsapp {
     private Usuario usuario;
 
     private ArrayList<Mensaje> mensajesSinLeer = new ArrayList<>();
-    ;
     private ArrayList<Contacto> contactosUsuario;
     private static Scanner sc = new Scanner(System.in);
 
